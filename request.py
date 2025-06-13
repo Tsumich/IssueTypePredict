@@ -11,7 +11,7 @@ import os
 
 # Данные для аутентификации
 def get_issues():
-    url = "https://dlomakina2018.atlassian.net/rest/api/3/search"
+    url = os.getenv("JIRA_SEARCH")
     auth = HTTPBasicAuth(os.getenv("JIRA_LOGIN"), os.getenv("JIRA_KEY"))
 
     # Параметры запроса
