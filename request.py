@@ -7,11 +7,12 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
+import os
 
 # Данные для аутентификации
 def get_issues():
     url = "https://dlomakina2018.atlassian.net/rest/api/3/search"
-    auth = HTTPBasicAuth("d.lomakina2018@yandex.ru", "ATATT3xFfGF02x32x8qnJaWUZdrxpJfaR_J7B6R6OTxS4CeWm6i_lK5_neXuaoLNXzEreqlFBfJW0YZw1yV25rr-2z7-Q-H0dLeeB-Lm5XAOEtp8ZzRL8hFF0UiQwq5pK4WeuuSYw2gFiwTEKsRIl6o4ThtLdXj9nXvAFc7GZLBdJeR3Dza0cAk=FCC17566")
+    auth = HTTPBasicAuth(os.getenv("JIRA_LOGIN"), os.getenv("JIRA_KEY"))
 
     # Параметры запроса
     headers = {"Accept": "application/json"}
@@ -51,19 +52,19 @@ def get_issues():
         print(f"Ошибка: {response.status_code}, {data}")
 
 texts, labels = get_issues()
-PROXY_API_URL = "https://api.proxyapi.ru/openai/v1/embeddings"  # Пример URL для ProxyAPI
-API_KEY = "sk-dYHvMbq0uBJnrxAKO4NbEfBgoD5nAHE9"
+  # Пример URL для ProxyAPI
+
 
 def get_embeddings(texts, model="text-embedding-ada-002"):
     headers = {
-        "Authorization": f"Bearer {API_KEY}",
+        "Authorization": f"Bearer {os.getenv("API_KEY")}",
         "Content-Type": "application/json"
     }
     data = {
         "input": texts,
         "model": model
     }
-    response = requests.post(PROXY_API_URL, headers=headers, json=data)
+    response = requests.post(os.getenv("PROXY_API_URL"), headers=headers, json=data)
     if response.status_code == 200:
         return np.array([item['embedding'] for item in response.json()['data']])
     else:
